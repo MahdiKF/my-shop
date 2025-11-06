@@ -1,91 +1,84 @@
 "use client"
-import CartItem from "@/components/CartItem";
+import React, { useEffect, useState } from "react";
 import Container from "@/components/Container";
+import CartItem from "@/components/CartItem";
 import { useShoppingCartContext } from "@/context/ShoppingCartContext";
 import { formatNumberWithCommas } from "@/utils/numbers";
-import axios from "axios";
-import React, { useEffect, useState } from "react";
 
-function Cart() {
-
-  const {cartItems} = useShoppingCartContext();
-  const [data, setData] = useState([])
-  const [discountCode, setDiscountCode] = useState("")
-  const [finalPrice, setFinalPrice] = useState(0)
-  const [discountedPrice, setDiscountedPrice] = useState(0)
+export default function Cart() {
+  const { cartItems } = useShoppingCartContext();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [discountCode, setDiscountCode] = useState("");
+  const [discountedPrice, setDiscountedPrice] = useState(0);
+  const [finalPrice, setFinalPrice] = useState(0);
 
   useEffect(() => {
-    fetch("http://localhost:3004/products")
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to fetch product");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        setData(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    fetch("https://fakestoreapi.com/products")
+      .then(res => res.json())
+      .then(data => setProducts(data))
+      .catch(err => console.error("Failed to fetch products:", err))
+      .finally(() => setLoading(false));
+  }, []);
 
-  },[]) 
+  // محاسبه قیمت کل
+  const totalPrice = cartItems.reduce((total, item) => {
+    const product = products.find(p => p.id === item.id);
+    return total + (product?.price || 0) * item.qty;
+  }, 0);
 
-  let totalPrice = cartItems.reduce((total,item)=>{
+  const handleApplyDiscount = () => {
+    // Fake discount simulation
+    let discount = 0;
+    if (discountCode.toLowerCase() === "sale10") discount = 10;
+    if (discountCode.toLowerCase() === "sale20") discount = 20;
 
-          let selectedProduct = data.find((product)=>product.id == item.id)
-          console.log(selectedProduct)
+    const discountAmount = (totalPrice * discount) / 100;
+    setDiscountedPrice(discountAmount);
+    setFinalPrice(totalPrice - discountAmount);
+  };
 
-          return total + (selectedProduct?.price || 0) * item.qty
+  if (loading) return <Container><p className="p-4">Loading cart...</p></Container>;
 
-
-
-        },0)
-
-  const handleSubmitDiscount = () =>{
-    axios(`http://localhost:3004/discount?code=${discountCode}`).then(
-      (result) => {
-
-        const {data} = result
-        const discountedPrice = totalPrice * data[0].percentage / 100
-        let finalPrice = totalPrice - discountedPrice
-        setFinalPrice(finalPrice)
-        setDiscountedPrice(discountedPrice  )
-        
-      }
-    )
-  }
-
-  return (  
+  return (
     <Container>
-      <h1 className="my-4"> Shopping cart</h1>
+      <h1 className="my-4 text-2xl font-semibold">Shopping Cart</h1>
 
-      <div className=""> 
-        {
-          cartItems.map((item)=>(
-            <CartItem key={item.id} {...item}/>
-
-          ))
-        }
-        
-      </div>
-
-      <div className="border shadow-md p-4">
-
-        <h3> totall price: <span>{
-          formatNumberWithCommas(totalPrice)}$</span></h3>
-        <h3> your profit: <span>{formatNumberWithCommas(discountedPrice)}$</span></h3>
-        <h3> finall price: <span>{formatNumberWithCommas(finalPrice)}$</span></h3>
-
-        <div>
-          <input type="text" placeholder="off code?" className="border"
-          onChange={(e)=>setDiscountCode(e.target.value)}/>
-          <button className="bg-sky-600 text-white px-4 rounded" onClick={handleSubmitDiscount} >submit</button>
+      {cartItems.length === 0 ? (
+        <p className="text-gray-500">Your cart is empty.</p>
+      ) : (
+        <div className="space-y-4">
+          {cartItems.map(item => (
+            <CartItem
+              key={item.id}
+              {...item}
+              product={products.find(p => p.id === item.id)}
+            />
+          ))}
         </div>
+      )}
 
+      <div className="border shadow-md p-4 mt-6 space-y-2 rounded-lg">
+        <h3>Total Price: <span className="font-medium">{formatNumberWithCommas(totalPrice)}$</span></h3>
+        <h3>Discount: <span className="font-medium">{formatNumberWithCommas(discountedPrice)}$</span></h3>
+        <h3>Final Price: <span className="font-bold">{formatNumberWithCommas(finalPrice || totalPrice)}$</span></h3>
+
+        <div className="mt-2 flex gap-2">
+          <input
+            type="text"
+            placeholder="Enter discount code"
+            value={discountCode}
+            onChange={(e) => setDiscountCode(e.target.value)}
+            className="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            onClick={handleApplyDiscount}
+            className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 transition-colors"
+          >
+            Apply
+          </button>
+        </div>
       </div>
     </Container>
   );
 }
-
-export default Cart;

@@ -1,8 +1,8 @@
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/Header/Navbar";
 import "./globals.css";
 import Layout from "@/components/Layout";
 import { ShoppingCartContextProvider } from "@/context/ShoppingCartContext";
-import Banner from "@/components/Banner";
+import Banner from "@/components/Header/Banner";
 
 export const metadata = {
   title: "My Shop",
