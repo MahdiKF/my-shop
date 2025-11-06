@@ -1,71 +1,99 @@
 "use client";
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { redirect, usePathname } from "next/navigation";
-import React from "react";
+import { usePathname } from "next/navigation";
 import Container from "./Container";
-import { useShoppingCartContext } from "@/context/ShoppingCartContext";
-import Cookies from "js-cookie";
+import { HiMenu, HiX } from "react-icons/hi";
 
-function Navbar() {
-  const {cartTotalQty} = useShoppingCartContext();
+export default function Navbar() {
   const pathname = usePathname();
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
+  useEffect(() => {
+    let mounted = true;
+    fetch("https://fakestoreapi.com/products/categories")
+      .then((res) => res.json())
+      .then((data) => mounted && setCategories(data))
+      .catch((err) => mounted && setError(err.message || "Error"))
+      .finally(() => mounted && setLoading(false));
 
+    return () => { mounted = false; };
+  }, []);
   
 
-  const navLinks = [
-    {
-      id: 1,
-      href: "/",
-      title: "Home",
-    },
-    {
-      id: 2,
-      href: "/store",
-      title: "Store",
-    },
-    {
-      id: 3,
-      href: "/dashboard",
-      title: "Dashboard",
-    },
-    // {
-    //   id: 4,
-    //   href: "/login",
-    //   title: "Login",
-    // },
-  ];
+  const toggleMobile = () => setMobileOpen(!mobileOpen);
 
   return (
-    <nav className=" p-5 bg-blue-100">
+    <nav className="bg-[#F3F4F6] shadow-md sticky top-0 z-50">
       <Container>
-        <div className="flex justify-between ">
-          <div>
-            {navLinks.map((item) => (
-              <Link
-                key={item.id}
-                className={`mr-4 ${
-                  pathname === item.href ? "text-sky-500" : ""
-                }`}
-                href={item.href}
-              >
-                {item.title}
-              </Link>
-            ))}
+        <div className="flex justify-between items-center py-4">
+          <h1 className="text-2xl font-bold text-[#1D4ED8]">MyShop</h1>
+
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center space-x-6">
+            {loading && <span className="text-[#6B7280]">Loading...</span>}
+            {error && <span className="text-red-500">{error}</span>}
+            {!loading &&
+              !error &&
+              categories.map((cat) => {
+                const href = `/category/${encodeURIComponent(cat)}`;
+                const isActive =
+                  pathname?.startsWith("/category") &&
+                  decodeURIComponent(pathname.split("/category/")[1] || "") === cat;
+                return (
+                  <Link
+                    key={cat}
+                    href={href}
+                    className={`text-[#111827] font-medium hover:text-[#2563EB] transition-colors ${
+                      isActive ? "text-[#1D4ED8] underline" : ""
+                    }`}
+                  >
+                    {cat}
+                  </Link>
+                );
+              })}
           </div>
 
-          <div>
-            <span className="px-2 py1 bg-red-500 text-white rounded-full">{cartTotalQty}</span>
-            <Link href="/cart">shopping cart</Link>
-            <button className="ml-4 text-red-600" onClick={()=>{
-              Cookies.remove("token")
-              redirect("/login")
-            }}>Log Out</button>
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button onClick={toggleMobile}>
+              {mobileOpen ? (
+                <HiX className="w-6 h-6 text-[#1D4ED8]" />
+              ) : (
+                <HiMenu className="w-6 h-6 text-[#1D4ED8]" />
+              )}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileOpen && (
+          <div className="md:hidden bg-[#F3F4F6] pb-4 flex flex-col space-y-2">
+            {categories.map((cat) => {
+              const href = `/category/${encodeURIComponent(cat)}`;
+              return (
+                <Link
+                  key={cat}
+                  href={href}
+                  className="text-[#111827] px-4 py-2 hover:bg-[#E5E7EB] rounded transition-colors"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {cat}
+                </Link>
+              );
+            })}
+          </div>
+        )}
       </Container>
     </nav>
   );
 }
 
-export default Navbar;
+
+
+
+
