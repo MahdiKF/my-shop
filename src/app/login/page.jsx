@@ -9,13 +9,11 @@ import * as Yup from "yup";
 function Login() {
   const router = useRouter();
 
-  // 📘 اعتبارسنجی فیلدها
   const validationSchema = Yup.object({
     username: Yup.string().required("نام کاربری الزامی است"),
     password: Yup.string().required("رمز عبور الزامی است"),
   });
 
-  // 📘 تابع لاگین
   const handleLogin = async (values, { setSubmitting }) => {
     try {
       const response = await fetch("https://auth.smart-acc.ir/api/v1/auth/login", {
@@ -27,7 +25,7 @@ function Login() {
         body: JSON.stringify({
           username: values.username,
           password: values.password,
-          useOTP: false, // در صورت نیاز true بگذار
+          useOTP: false,
         }),
       });
 

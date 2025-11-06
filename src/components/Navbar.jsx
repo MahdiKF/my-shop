@@ -29,11 +29,11 @@ function Navbar() {
       href: "/dashboard",
       title: "Dashboard",
     },
-    {
-      id: 4,
-      href: "/login",
-      title: "Login",
-    },
+    // {
+    //   id: 4,
+    //   href: "/login",
+    //   title: "Login",
+    // },
   ];
 
   return (

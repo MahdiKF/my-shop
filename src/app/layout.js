@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import "./globals.css";
 import Layout from "@/components/Layout";
 import { ShoppingCartContextProvider } from "@/context/ShoppingCartContext";
+import Banner from "@/components/Banner";
 
 export const metadata = {
   title: "My Shop",
@@ -15,6 +16,7 @@ export default function RootLayout({ children }) {
         
 
         <ShoppingCartContextProvider>
+          <Banner />
           <Navbar />
           <Layout>{children}</Layout>
         </ShoppingCartContextProvider>
