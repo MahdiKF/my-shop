@@ -21,14 +21,12 @@ export default function Cart() {
       .finally(() => setLoading(false));
   }, []);
 
-  // محاسبه قیمت کل
   const totalPrice = cartItems.reduce((total, item) => {
     const product = products.find(p => p.id === item.id);
     return total + (product?.price || 0) * item.qty;
   }, 0);
 
   const handleApplyDiscount = () => {
-    // Fake discount simulation
     let discount = 0;
     if (discountCode.toLowerCase() === "sale10") discount = 10;
     if (discountCode.toLowerCase() === "sale20") discount = 20;
@@ -38,14 +36,14 @@ export default function Cart() {
     setFinalPrice(totalPrice - discountAmount);
   };
 
-  if (loading) return <Container><p className="p-4">Loading cart...</p></Container>;
+  if (loading) return <Container><p className="p-6 text-gray-500 text-center">Loading cart...</p></Container>;
 
   return (
     <Container>
-      <h1 className="my-4 text-2xl font-semibold">Shopping Cart</h1>
+      <h1 className="my-6 text-3xl font-bold text-gray-800 border-b pb-2">Shopping Cart</h1>
 
       {cartItems.length === 0 ? (
-        <p className="text-gray-500">Your cart is empty.</p>
+        <p className="text-gray-500 text-center py-6">Your cart is empty.</p>
       ) : (
         <div className="space-y-4">
           {cartItems.map(item => (
@@ -58,22 +56,31 @@ export default function Cart() {
         </div>
       )}
 
-      <div className="border shadow-md p-4 mt-6 space-y-2 rounded-lg">
-        <h3>Total Price: <span className="font-medium">{formatNumberWithCommas(totalPrice)}$</span></h3>
-        <h3>Discount: <span className="font-medium">{formatNumberWithCommas(discountedPrice)}$</span></h3>
-        <h3>Final Price: <span className="font-bold">{formatNumberWithCommas(finalPrice || totalPrice)}$</span></h3>
+      <div className="mt-8 p-6 bg-white rounded-xl shadow-lg border border-gray-200 max-w-md mx-auto">
+        <h3 className="flex justify-between text-gray-700 font-medium mb-1">
+          <span>Total Price:</span>
+          <span className="font-semibold">{formatNumberWithCommas(totalPrice)}$</span>
+        </h3>
+        <h3 className="flex justify-between text-gray-700 font-medium mb-1">
+          <span>Discount:</span>
+          <span className="text-red-500 font-semibold">{formatNumberWithCommas(discountedPrice)}$</span>
+        </h3>
+        <h3 className="flex justify-between text-gray-900 font-bold text-lg mb-4 border-t border-gray-200 pt-2">
+          <span>Final Price:</span>
+          <span>{formatNumberWithCommas(finalPrice || totalPrice)}$</span>
+        </h3>
 
-        <div className="mt-2 flex gap-2">
+        <div className="flex gap-2">
           <input
             type="text"
             placeholder="Enter discount code"
             value={discountCode}
             onChange={(e) => setDiscountCode(e.target.value)}
-            className="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
           />
           <button
             onClick={handleApplyDiscount}
-            className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 transition-colors"
+            className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
           >
             Apply
           </button>
