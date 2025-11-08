@@ -10,6 +10,14 @@ export default function Navbar() {
   const [categories, setCategories] = useState([]);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // Map دسته‌ها به URL خوانا
+  const categoryMap = {
+    "men's clothing": "men",
+    "women's clothing": "women",
+    "jewelery": "jewelery",
+    "electronics": "electronics",
+  };
+
   useEffect(() => {
     let mounted = true;
     fetch("https://fakestoreapi.com/products/categories")
@@ -19,31 +27,34 @@ export default function Navbar() {
     return () => { mounted = false; };
   }, []);
 
+  // تابع تبدیل category API به مسیر خوانا
+  const getCategoryHref = (cat) => `/category/${categoryMap[cat] || encodeURIComponent(cat)}`;
+
+  // تابع بررسی active بودن لینک
+  const isActive = (cat) => {
+    const current = pathname?.split("/category/")[1];
+    return current === categoryMap[cat];
+  };
+
   return (
-    <div className="bg-white border-b border-gray-200">
+    <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <Container>
         <div className="flex justify-between items-center py-3">
           <h1 className="text-2xl font-bold text-[#1D4ED8]">MyShop</h1>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">
-            {categories.map(cat => {
-              const href = `/category/${encodeURIComponent(cat)}`;
-              const isActive =
-                pathname?.startsWith("/category") &&
-                decodeURIComponent(pathname.split("/category/")[1] || "") === cat;
-              return (
-                <Link
-                  key={cat}
-                  href={href}
-                  className={`text-[#111827] font-medium hover:text-[#2563EB] transition-all duration-200 ${
-                    isActive ? "text-[#1D4ED8] underline scale-105" : ""
-                  }`}
-                >
-                  {cat}
-                </Link>
-              );
-            })}
+            {categories.map(cat => (
+              <Link
+                key={cat}
+                href={getCategoryHref(cat)}
+                className={`text-[#111827] font-medium hover:text-[#2563EB] transition-all duration-200 ${
+                  isActive(cat) ? "text-[#1D4ED8] underline scale-105" : ""
+                }`}
+              >
+                {cat}
+              </Link>
+            ))}
           </div>
 
           {/* Mobile Menu Button */}
@@ -64,7 +75,7 @@ export default function Navbar() {
             {categories.map(cat => (
               <Link
                 key={cat}
-                href={`/category/${encodeURIComponent(cat)}`}
+                href={getCategoryHref(cat)}
                 className="text-[#111827] px-4 py-2 hover:bg-gray-100 rounded transition-colors"
                 onClick={() => setMobileOpen(false)}
               >
