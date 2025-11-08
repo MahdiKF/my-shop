@@ -3,6 +3,7 @@ import "./globals.css";
 import Layout from "@/components/Layout";
 import { ShoppingCartContextProvider } from "@/context/ShoppingCartContext";
 import Banner from "@/components/Header/Banner";
+import Footer from "@/components/Footer";
 
 export const metadata = {
   title: "My Shop",
@@ -19,6 +20,7 @@ export default function RootLayout({ children }) {
           <Banner />
           <Navbar />
           <Layout>{children}</Layout>
+          <Footer />
         </ShoppingCartContextProvider>
       </body>
     </html>

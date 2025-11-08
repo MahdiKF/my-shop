@@ -9,7 +9,6 @@ export default function AboutUs() {
         </h2>
 
         <div className="grid md:grid-cols-2 gap-8 items-start">
-          {/* متن و مزایا */}
           <div className="text-right">
             <p className="text-gray-600 leading-relaxed">
               ما مجموعه‌ای تخصصی برای عرضه محصولات باکیفیت هستیم. تمرکز ما روی
@@ -49,13 +48,13 @@ export default function AboutUs() {
 
             <div className="mt-6 flex items-center gap-4 justify-end">
               <a
-                href="/about"
+                href="/aboutus"
                 className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow transition-all duration-300"
               >
                 بیشتر بدانید
               </a>
               <a
-                href="/contact"
+                href="/contactus"
                 className="px-5 py-2 border border-gray-300 hover:bg-gray-50 rounded-xl transition-all duration-300"
               >
                 ارتباط با ما
@@ -63,7 +62,6 @@ export default function AboutUs() {
             </div>
           </div>
 
-          {/* آمار و اعتماد */}
           <div className="bg-gray-50 rounded-xl p-6 md:p-8 text-center md:text-right">
             <div className="grid grid-cols-3 gap-4">
               <div className="rounded-lg bg-white shadow-sm p-4">

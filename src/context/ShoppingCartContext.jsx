@@ -1,16 +1,11 @@
 "use client"
 import { createContext, useContext, useEffect, useState } from "react";
-
 const ShoppingCartContext = createContext({});
-
 
 export const useShoppingCartContext = () =>{
     return useContext(ShoppingCartContext);
 
 }
-
-
-
 export function ShoppingCartContextProvider({children}){
 
     const [ cartItems, setCartItems ] = useState([])
