@@ -21,7 +21,6 @@ function Slider() {
   return (
     <div className="flex flex-col md:flex-row w-full h-[450px] gap-10 rounded-2xl shadow-md mb-10 overflow-hidden bg-white">
       
-      {/* تصویر */}
       <div className="md:w-1/2 w-full h-full relative">
         {images.map((img, idx) => (
           <img
@@ -35,7 +34,6 @@ function Slider() {
         ))}
       </div>
 
-      {/* متن */}
       <div className="md:w-1/2 w-full flex flex-col justify-center pr-6 md:pr-10 text-right" dir="rtl">
         <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-gray-800">
           بهترین محصولات ما

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { HiTrash } from "react-icons/hi";
 import { useShoppingCartContext } from "@/context/ShoppingCartContext";
 
-export default function ProductCard({ product, href }) {
+export default function ProductCard({ product }) {
   const {
     handleIncreaseProductQty,
     handleDecreaseProductQty,
@@ -16,7 +16,10 @@ export default function ProductCard({ product, href }) {
 
   return (
     <div className="group bg-white rounded-2xl shadow hover:shadow-lg transition-shadow duration-300 p-4 flex flex-col justify-between h-full">
-      <div className="flex flex-col items-center text-center">
+      <Link
+        href={`/store/${product.id}`}
+        className="flex flex-col items-center text-center cursor-pointer"
+      >
         <div className="w-32 h-32 relative">
           <Image
             src={product.image}
@@ -41,7 +44,7 @@ export default function ProductCard({ product, href }) {
         <span className="mt-2 inline-block text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full">
           {product.category}
         </span>
-      </div>
+      </Link>
 
       <div className="mt-4 flex flex-col items-center gap-2 w-full">
         {qty === 0 ? (
@@ -52,7 +55,7 @@ export default function ProductCard({ product, href }) {
             افزودن به سبد
           </button>
         ) : (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full justify-center">
             <button
               onClick={() => handleDecreaseProductQty(product.id)}
               className="px-3 py-1 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 hover:text-gray-900 transition transform hover:scale-110 shadow"
