@@ -61,7 +61,6 @@ export default function Cart() {
         </div>
       )}
 
-      {/* Summary */}
       {cartItems.length > 0 && (
         <div className="mt-8 p-6 bg-white rounded-xl shadow-lg border border-gray-200 max-w-md mx-auto">
           <h3 className="flex justify-between text-gray-700 font-medium mb-1">

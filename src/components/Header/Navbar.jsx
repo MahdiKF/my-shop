@@ -6,10 +6,8 @@ import { HiMenu, HiX } from "react-icons/hi";
 import Container from "../Container";
 
 function toSlug(cat) {
-  // نگاشت‌های دلخواه
   if (cat.toLowerCase() === "women's clothing") return "womens";
   if (cat.toLowerCase() === "men's clothing") return "mens";
-  // اسلاگ عمومی برای بقیه
   return cat
     .toLowerCase()
     .replace(/&/g, "and")
@@ -36,6 +34,8 @@ export default function Navbar() {
 
   const activeSlug = pathname?.startsWith("/category/")
     ? pathname.split("/category/")[1]?.split("/")[0]
+    : pathname === "/store"
+    ? "all"
     : "";
 
   return (
@@ -49,16 +49,24 @@ export default function Navbar() {
             MyShop
           </Link>
 
-          {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">
+            {/* لینک All */}
+            <Link
+              href="/store"
+              className={`text-[#111827] font-medium hover:text-[#2563EB] transition-all duration-200 ${
+                activeSlug === "all" ? "text-[#1D4ED8] underline scale-105" : ""
+              }`}
+            >
+              All
+            </Link>
+
             {categories.map((cat) => {
               const slug = toSlug(cat);
-              const href = `/category/${slug}`;
               const isActive = activeSlug === slug;
               return (
                 <Link
                   key={cat}
-                  href={href}
+                  href={`/category/${slug}`}
                   className={`text-[#111827] font-medium hover:text-[#2563EB] transition-all duration-200 ${
                     isActive ? "text-[#1D4ED8] underline scale-105" : ""
                   }`}
@@ -69,7 +77,6 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button onClick={() => setMobileOpen(!mobileOpen)}>
               {mobileOpen ? (
@@ -81,9 +88,16 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Menu */}
         {mobileOpen && (
           <div className="md:hidden bg-white pb-4 flex flex-col space-y-2 animate-slideDown">
+            <Link
+              href="/store"
+              className="text-[#111827] px-4 py-2 hover:bg-gray-100 rounded transition-colors"
+              onClick={() => setMobileOpen(false)}
+            >
+              All
+            </Link>
+
             {categories.map((cat) => {
               const slug = toSlug(cat);
               return (

@@ -19,7 +19,7 @@ function NewProducts() {
     {
       id: 3,
       title: "ساعت مردانه",
-      image: "https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_.jpg",
+      image: "https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg",
       link: "/products/3",
     },
     {
