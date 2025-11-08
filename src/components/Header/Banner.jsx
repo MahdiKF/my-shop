@@ -3,10 +3,12 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { HiShoppingCart, HiMagnifyingGlass } from "react-icons/hi2";
 import { useShoppingCartContext } from "@/context/ShoppingCartContext";
+import { useAuth } from "@/context/AuthContext"; // استفاده از useAuth برای دسترسی به اطلاعات کاربر
 import Container from "../Container";
 
 export default function Banner() {
   const { cartTotalQty } = useShoppingCartContext();
+  const { user, logout } = useAuth(); // دسترسی به اطلاعات کاربر از Context
   const [search, setSearch] = useState("");
 
   const handleSearch = (e) => {
@@ -19,21 +21,37 @@ export default function Banner() {
     <div className="border-b border-gray-200 bg-[#F3F4F6]">
       <Container>
         <div className="flex flex-col md:flex-row items-center justify-between py-3 gap-3">
-          {/* Login/Register */}
+          {/* Login/Register or User Info */}
           <div className="flex items-center space-x-4 text-sm md:text-base">
-            <Link
-              href="/login"
-              className="text-[#1D4ED8] font-medium hover:text-[#2563EB] transition-colors"
-            >
-              Login
-            </Link>
-            <span className="text-gray-400">/</span>
-            <Link
-              href="/register"
-              className="text-[#1D4ED8] font-medium hover:text-[#2563EB] transition-colors"
-            >
-              Register
-            </Link>
+            {user ? (
+              // اگر کاربر وارد شده باشد
+              <div className="flex items-center space-x-4">
+                <span className="text-gray-600 font-medium">{user.fullName}</span>
+                <button
+                  onClick={logout}
+                  className="text-[#1D4ED8] font-medium hover:text-[#2563EB] transition-colors"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              // اگر کاربر وارد نشده باشد
+              <>
+                <Link
+                  href="/login"
+                  className="text-[#1D4ED8] font-medium hover:text-[#2563EB] transition-colors"
+                >
+                  Login
+                </Link>
+                <span className="text-gray-400">/</span>
+                <Link
+                  href="/register"
+                  className="text-[#1D4ED8] font-medium hover:text-[#2563EB] transition-colors"
+                >
+                  Register
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Search Box */}

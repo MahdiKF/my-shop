@@ -1,48 +1,45 @@
 "use client";
 import React from "react";
-import Cookie from "js-cookie";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useAuth } from "@/context/AuthContext"; // استفاده از useAuth
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 function Login() {
   const router = useRouter();
+  const { login } = useAuth(); // دسترسی به متد login از Context
 
   const validationSchema = Yup.object({
-    username: Yup.string().required("نام کاربری الزامی است"),
+    email: Yup.string().email("ایمیل معتبر نیست").required("ایمیل الزامی است"),
     password: Yup.string().required("رمز عبور الزامی است"),
   });
 
   const handleLogin = async (values, { setSubmitting }) => {
     try {
-      const response = await fetch("https://auth.smart-acc.ir/api/v1/auth/login", {
-        method: "POST",
-        headers: {
-          "accept": "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: values.username,
-          password: values.password,
-          useOTP: false,
-        }),
-      });
+      const response = await fetch(
+        "https://68324c7fc3f2222a8cb1f4ff.mockapi.io/myShop", // ارسال به URL بدون پارامترهای در URL
+        {
+          method: "POST", // تغییر متد به POST
+          headers: {
+            "Content-Type": "application/json", // ارسال داده‌ها به صورت JSON
+            "accept": "application/json",
+          },
+          body: JSON.stringify({
+            Email: values.email,
+            password: values.password,
+          }), // ارسال ایمیل و رمز عبور در بدنه درخواست
+        }
+      );
 
       const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data?.message || "ورود ناموفق بود");
-      }
-
-      // ✅ فرض بر این است که API توکن را در فیلد data.token برمی‌گرداند
-      if (data?.data?.token) {
-        Cookie.set("token", data.data.token, { expires: 7 });
-        router.push("/dashboard");
+      if (data.length > 0) {
+        const user = data[0]; // در صورت پیدا شدن کاربر
+        login(user); // ذخیره اطلاعات کاربر در Context
+        router.push("/"); // هدایت به صفحه اصلی
       } else {
-        alert("توکن معتبر دریافت نشد.");
+        alert("ایمیل یا رمز عبور اشتباه است.");
       }
-
     } catch (error) {
       alert(error.message);
       console.error("Login error:", error);
@@ -56,46 +53,26 @@ function Login() {
       <div className="flex-1 flex items-center justify-center bg-blue-50">
         <div className="w-80 rounded-lg mb-50 flex flex-col">
           <Formik
-            initialValues={{ username: "", password: "" }}
+            initialValues={{ email: "", password: "" }}
             validationSchema={validationSchema}
             onSubmit={handleLogin}
           >
             {({ isSubmitting }) => (
               <Form>
-                {/* Username */}
-                <p className="ml-2 text-sm font-medium">Username</p>
                 <Field
-                  type="text"
-                  name="username"
+                  type="email"
+                  name="email"
                   className="p-2 rounded w-full mt-3 mb-2 bg-blue-100 rounded-l-full rounded-r-full"
                 />
-                <ErrorMessage
-                  name="username"
-                  component="div"
-                  className="text-red-500 text-xs mb-3 ml-3"
-                />
+                <ErrorMessage name="email" component="div" className="text-red-500 text-xs mb-3 ml-3" />
 
-                {/* Password */}
-                <p className="ml-2 text-sm font-medium">Password</p>
                 <Field
                   type="password"
                   name="password"
                   className="p-2 rounded w-full mt-3 bg-blue-100 rounded-l-full rounded-r-full"
                 />
-                <ErrorMessage
-                  name="password"
-                  component="div"
-                  className="text-red-500 text-xs mb-3 ml-3"
-                />
+                <ErrorMessage name="password" component="div" className="text-red-500 text-xs mb-3 ml-3" />
 
-                {/* Register link */}
-                <Link href="/register">
-                  <p className="text-xs mt-2 ml-4">
-                    Don’t have an account? Click here
-                  </p>
-                </Link>
-
-                {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={isSubmitting}
