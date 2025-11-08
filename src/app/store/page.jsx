@@ -38,7 +38,6 @@ export default function Store() {
         فروشگاه
       </h1>
 
-      {/* جستجو */}
       <div className="mt-6 mb-6 max-w-md mx-auto relative">
         <input
           type="text"
@@ -49,7 +48,6 @@ export default function Store() {
         />
       </div>
 
-      {/* محصولات */}
       {paginated.length === 0 ? (
         <p className="text-center text-gray-500 mt-10">محصولی یافت نشد.</p>
       ) : (
@@ -60,7 +58,6 @@ export default function Store() {
         </div>
       )}
 
-      {/* صفحه‌بندی */}
       {totalPages > 1 && (
         <div className="mt-8 flex justify-center">
           <Pagination pageCount={totalPages} currentPage={page} onPageChange={setPage} />
