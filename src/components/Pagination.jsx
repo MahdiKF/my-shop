@@ -28,13 +28,14 @@ function Pagination({ pageCount, currentPage = 1 }) {
       renderOnZeroPageCount={null}
       containerClassName="flex justify-center items-center space-x-2 mt-8"
       pageClassName="inline-block"
-      pageLinkClassName="px-4 py-2 rounded-full border border-gray-300 text-gray-700 hover:bg-blue-100 hover:text-blue-600 transition-all"
+      pageLinkClassName="flex justify-center items-center w-8 h-8 rounded-full border border-gray-300 text-gray-700 hover:bg-blue-100 hover:text-blue-600 transition-all"
       previousClassName="inline-block"
       previousLinkClassName="px-4 py-2 rounded-full border border-gray-300 text-gray-700 hover:bg-blue-100 hover:text-blue-600 transition-all"
       nextClassName="inline-block"
       nextLinkClassName="px-4 py-2 rounded-full border border-gray-300 text-gray-700 hover:bg-blue-100 hover:text-blue-600 transition-all"
       breakClassName="inline-block px-2 text-gray-400"
-      activeClassName="bg-blue-600 text-white border-blue-600 shadow-md"
+      activeClassName="bg-blue-400 text-white border-blue-400 shadow-md rounded-full w-8 h-8"
+      style={{ display: "inline-flex", justifyContent: "center", alignItems: "center" }}
     />
   );
 }

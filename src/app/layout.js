@@ -16,14 +16,13 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         
-        <AuthProvider>
+        
         <ShoppingCartContextProvider>
           <Banner />
           <Navbar />
           <Layout>{children}</Layout>
           <Footer />
         </ShoppingCartContextProvider>
-        </AuthProvider>
       </body>
     </html>
   );
