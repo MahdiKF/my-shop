@@ -1,6 +1,5 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
-
 // ایجاد کانتکست برای سبد خرید و وضعیت کاربر
 const ShoppingCartContext = createContext({});
 
@@ -40,6 +39,7 @@ export function ShoppingCartContextProvider({ children }) {
           } else {
             return item;
           }
+
         });
       }
     });
