@@ -1,96 +1,110 @@
 "use client";
-import React from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext"; // استفاده از useAuth
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { useState } from "react"; // برای مدیریت وضعیت پیام‌ها
+import { useRouter } from "next/navigation"; // برای هدایت به صفحه اصلی
 
-function Login() {
-  const router = useRouter();
-  const { login } = useAuth(); // دسترسی به متد login از Context
+// تغییر validationSchema برای 4 فیلد
+const validationSchema = Yup.object({
+  email: Yup.string().email("ایمیل معتبر نیست").required("ایمیل لازمه"),
+  password: Yup.string().required("رمز عبور لازمه"),
+});
 
-  const validationSchema = Yup.object({
-    email: Yup.string().email("ایمیل معتبر نیست").required("ایمیل الزامی است"),
-    password: Yup.string().required("رمز عبور الزامی است"),
-  });
+export default function Login() {
+  const [message, setMessage] = useState(""); // وضعیت پیام
+  const [isSuccess, setIsSuccess] = useState(false); // بررسی موفقیت یا خطا
+  const router = useRouter(); // استفاده از useRouter برای هدایت
 
   const handleLogin = async (values, { setSubmitting }) => {
     try {
-      const response = await fetch(
-        "https://68324c7fc3f2222a8cb1f4ff.mockapi.io/myShop", // ارسال به URL بدون پارامترهای در URL
-        {
-          method: "POST", // تغییر متد به POST
-          headers: {
-            "Content-Type": "application/json", // ارسال داده‌ها به صورت JSON
-            "accept": "application/json",
-          },
-          body: JSON.stringify({
-            Email: values.email,
-            password: values.password,
-          }), // ارسال ایمیل و رمز عبور در بدنه درخواست
-        }
+      // دریافت اطلاعات کاربران از LocalStorage
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+
+      // پیدا کردن کاربر بر اساس ایمیل و رمز عبور
+      const user = users.find(
+        (u) => u.email === values.email && u.password === values.password
       );
 
-      const data = await response.json();
-
-      if (data.length > 0) {
-        const user = data[0]; // در صورت پیدا شدن کاربر
-        login(user); // ذخیره اطلاعات کاربر در Context
-        router.push("/"); // هدایت به صفحه اصلی
+      if (user) {
+        setMessage("ورود موفقیت‌آمیز!");
+        setIsSuccess(true);
+        // هدایت به صفحه اصلی پس از ورود موفقیت‌آمیز
+        setTimeout(() => {
+          router.push("/"); // هدایت به صفحه اصلی
+        }, 2000); // 2 ثانیه تاخیر برای نمایش پیام موفقیت
       } else {
-        alert("ایمیل یا رمز عبور اشتباه است.");
+        setMessage("ایمیل یا رمز عبور اشتباه است.");
+        setIsSuccess(false);
       }
     } catch (error) {
-      alert(error.message);
-      console.error("Login error:", error);
+      console.error("Error:", error);
+      setMessage("خطا در ورود.");
+      setIsSuccess(false);
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="h-[calc(100vh-56px)] flex">
-      <div className="flex-1 flex items-center justify-center bg-blue-50">
-        <div className="w-80 rounded-lg mb-50 flex flex-col">
-          <Formik
-            initialValues={{ email: "", password: "" }}
-            validationSchema={validationSchema}
-            onSubmit={handleLogin}
-          >
-            {({ isSubmitting }) => (
-              <Form>
-                <Field
-                  type="email"
-                  name="email"
-                  className="p-2 rounded w-full mt-3 mb-2 bg-blue-100 rounded-l-full rounded-r-full"
-                />
-                <ErrorMessage name="email" component="div" className="text-red-500 text-xs mb-3 ml-3" />
+    <div className="flex justify-center mt-10">
+      <Formik
+        initialValues={{
+          email: "",
+          password: "",
+        }}
+        validationSchema={validationSchema}
+        onSubmit={handleLogin}
+      >
+        {({ isSubmitting }) => (
+          <Form className="flex flex-col gap-4 w-80">
+            {/* فرم فیلدها */}
+            <Field
+              name="email"
+              placeholder="Email"
+              className="p-2 border rounded"
+            />
+            <ErrorMessage
+              name="email"
+              component="div"
+              className="text-red-500 text-sm"
+            />
 
-                <Field
-                  type="password"
-                  name="password"
-                  className="p-2 rounded w-full mt-3 bg-blue-100 rounded-l-full rounded-r-full"
-                />
-                <ErrorMessage name="password" component="div" className="text-red-500 text-xs mb-3 ml-3" />
+            <Field
+              name="password"
+              type="password"
+              placeholder="Password"
+              className="p-2 border rounded"
+            />
+            <ErrorMessage
+              name="password"
+              component="div"
+              className="text-red-500 text-sm"
+            />
 
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={`mt-6 mx-auto h-12 w-16 bg-blue-600 text-white py-2 transition-all hover:bg-blue-700 hover:w-32 duration-600 rounded-full ${
-                    isSubmitting ? "opacity-60 cursor-not-allowed" : ""
-                  }`}
-                >
-                  {isSubmitting ? "..." : "Login"}
-                </button>
-              </Form>
+            {/* پیام موفقیت یا خطا */}
+            {message && (
+              <div
+                className={`p-4 mt-4 text-center ${
+                  isSuccess
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800"
+                }`}
+              >
+                {message}
+              </div>
             )}
-          </Formik>
-        </div>
-      </div>
 
-      <div className="flex-1 bg-[url('/Images/Login.jpg')] bg-center bg-contain bg-no-repeat mt-1 bg-white"></div>
+            {/* دکمه ارسال */}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="p-2 bg-blue-500 text-white rounded"
+            >
+              Login
+            </button>
+          </Form>
+        )}
+      </Formik>
     </div>
   );
 }
-
-export default Login;

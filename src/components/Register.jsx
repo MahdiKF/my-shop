@@ -1,7 +1,8 @@
 "use client";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useState } from "react"; // برای مدیریت وضعیت پیام‌ها
+import { useState, useEffect } from "react"; // برای مدیریت وضعیت پیام‌ها
+import { useRouter } from "next/navigation";
 
 // تغییر validationSchema برای 4 فیلد
 const validationSchema = Yup.object({
@@ -16,6 +17,16 @@ const validationSchema = Yup.object({
 export default function Register() {
   const [message, setMessage] = useState(""); // وضعیت پیام
   const [isSuccess, setIsSuccess] = useState(false); // بررسی موفقیت یا خطا
+  const router = useRouter(); // برای هدایت به صفحه لاگین
+
+  useEffect(() => {
+    if (isSuccess) {
+      // هدایت کاربر به صفحه لاگین پس از 3 ثانیه
+      setTimeout(() => {
+        router.push("/login");
+      }, 3000);
+    }
+  }, [isSuccess, router]);
 
   return (
     <div className="flex justify-center mt-10">
@@ -27,49 +38,36 @@ export default function Register() {
           confirmPass: "",
         }}
         validationSchema={validationSchema}
-        onSubmit={async (values, { resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           try {
-            const response = await fetch(
-              "https://auth.smart-acc.ir/api/v1/auth/register",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  accept: "application/json",
-                },
-                body: JSON.stringify({
-                  firstName: values.fullName,
-                  lastName: "default",
-                  email: values.email,
-                  password: values.pass,
-                  phoneNumber: "09121001010", // اضافه کردن شماره تلفن به درخواست
-                }),
-              }
-            );
+            const users = JSON.parse(localStorage.getItem("users")) || [];
+            const userExists = users.some((user) => user.email === values.email);
 
-            const data = await response.json();
-            console.log("Status:", response.status);
-            console.log("Response Data:", data);
+            if (userExists) {
+              setMessage("این ایمیل قبلاً ثبت‌نام کرده است.");
+              setIsSuccess(false);
+            } else {
+              const newUser = {
+                fullName: values.fullName,
+                email: values.email,
+                password: values.pass,
+              };
+              users.push(newUser);
 
-            // بررسی وضعیت پاسخ
-            if (response.ok) {
+              localStorage.setItem("users", JSON.stringify(users));
               setMessage("با موفقیت ثبت نام کردید!");
               setIsSuccess(true);
               resetForm();
-            } else {
-              setMessage(`خطا در ثبت نام: ${data.message || "مشخص نیست"}`);
-              setIsSuccess(false);
             }
           } catch (error) {
             console.error("Error:", error);
-            setMessage("خطا در اتصال به سرور. لطفاً دوباره تلاش کنید.");
+            setMessage("خطا در ذخیره‌سازی داده‌ها.");
             setIsSuccess(false);
           }
         }}
       >
         {({ isSubmitting }) => (
           <Form className="flex flex-col gap-4 w-80">
-            {/* فرم فیلدها */}
             <Field
               name="fullName"
               placeholder="Full Name"
@@ -129,7 +127,6 @@ export default function Register() {
               </div>
             )}
 
-            {/* دکمه ارسال */}
             <button
               type="submit"
               disabled={isSubmitting}
@@ -140,6 +137,13 @@ export default function Register() {
           </Form>
         )}
       </Formik>
+
+      {/* پیام نمایش موفقیت */}
+      {isSuccess && (
+        <div className="mt-4 text-center text-green-700">
+          ثبت‌نام شما موفقیت‌آمیز بود. در حال هدایت به صفحه لاگین...
+        </div>
+      )}
     </div>
   );
 }
