@@ -1,44 +1,34 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
-import AddToCart from "@/components/AddToCard";
 import Container from "@/components/Container";
-import Loading from "@/components/Loading";
+import AddToCart from "@/components/AddToCard"; // حواست باشه اسم کامپوننت درست باشه
 
-export default function Product({ params }) {
+export const dynamic = "force-dynamic"; // برای SSR کامل
+
+export default async function Product({ params }) {
   const { id } = params;
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let mounted = true;
-    setLoading(true);
+  let product = null;
 
-    fetch(`https://fakestoreapi.com/products/${id}`)
-      .then((res) => res.json())
-      .then((data) => mounted && setProduct(data))
-      .catch(console.error)
-      .finally(() => mounted && setLoading(false));
+  try {
+    const res = await fetch(`https://fakestoreapi.com/products/${id}`, {
+      cache: "no-store", // هر درخواست تازه واکشی شود
+    });
+    product = await res.json();
+  } catch (error) {
+    console.error(error);
+  }
 
-    return () => {
-      mounted = false;
-    };
-  }, [id]);
-
-  if (loading) return <Loading />;
-
-  if (!product)
+  if (!product) {
     return (
       <Container>
         <p className="text-center text-gray-500 mt-10">محصولی یافت نشد.</p>
       </Container>
     );
+  }
 
   return (
     <Container>
       <div className="grid grid-cols-1 md:grid-cols-12 gap-10 mt-10 p-6 bg-white shadow-lg rounded-2xl border border-gray-100 transition-all duration-300 hover:shadow-xl">
         
-        {/* تصویر محصول */}
         <div className="md:col-span-6 flex justify-center items-center">
           <img
             src={product.image}
@@ -47,7 +37,6 @@ export default function Product({ params }) {
           />
         </div>
 
-        {/* اطلاعات محصول */}
         <div className="md:col-span-6 flex flex-col justify-center gap-5">
           <h1 className="text-3xl font-bold text-gray-800 leading-snug">
             {product.title}
