@@ -1,10 +1,9 @@
 "use client";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useState, useEffect } from "react"; // برای مدیریت وضعیت پیام‌ها
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-// تغییر validationSchema برای 4 فیلد
 const validationSchema = Yup.object({
   fullName: Yup.string().required("نام کامل لازمه"),
   email: Yup.string().email("ایمیل معتبر نیست").required("ایمیل لازمه"),
@@ -15,16 +14,15 @@ const validationSchema = Yup.object({
 });
 
 export default function Register() {
-  const [message, setMessage] = useState(""); // وضعیت پیام
-  const [isSuccess, setIsSuccess] = useState(false); // بررسی موفقیت یا خطا
-  const router = useRouter(); // برای هدایت به صفحه لاگین
+  const [message, setMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     if (isSuccess) {
-      // هدایت کاربر به صفحه لاگین پس از 3 ثانیه
       setTimeout(() => {
         router.push("/login");
-      }, 3000);
+      }, 1000);
     }
   }, [isSuccess, router]);
 
@@ -41,7 +39,9 @@ export default function Register() {
         onSubmit={(values, { resetForm }) => {
           try {
             const users = JSON.parse(localStorage.getItem("users")) || [];
-            const userExists = users.some((user) => user.email === values.email);
+            const userExists = users.some(
+              (user) => user.email === values.email
+            );
 
             if (userExists) {
               setMessage("این ایمیل قبلاً ثبت‌نام کرده است.");
@@ -114,7 +114,6 @@ export default function Register() {
               className="text-red-500 text-sm"
             />
 
-            {/* پیام موفقیت یا خطا */}
             {message && (
               <div
                 className={`p-4 mt-4 text-center ${
@@ -138,7 +137,6 @@ export default function Register() {
         )}
       </Formik>
 
-      {/* پیام نمایش موفقیت */}
       {isSuccess && (
         <div className="mt-4 text-center text-green-700">
           ثبت‌نام شما موفقیت‌آمیز بود. در حال هدایت به صفحه لاگین...

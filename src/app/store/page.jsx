@@ -32,10 +32,8 @@ export default function Store() {
       .finally(() => setLoading(false));
   }, []);
 
-  // وقتی در حال لود شدنه
   if (loading) return <Loading />;
 
-  // فیلتر محصولات
   const filtered = products.filter((p) => {
     const matchSearch = p.title
       .toLowerCase()
@@ -56,7 +54,6 @@ export default function Store() {
         🛍️ فروشگاه
       </h1>
 
-      {/* فیلترها */}
       <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-6 mb-6">
         <input
           type="text"
@@ -86,7 +83,6 @@ export default function Store() {
         </select>
       </div>
 
-      {/* نمایش محصولات */}
       {paginated.length === 0 ? (
         <p className="text-center text-gray-500 mt-10">محصولی یافت نشد.</p>
       ) : (
@@ -101,7 +97,6 @@ export default function Store() {
         </div>
       )}
 
-      {/* صفحه‌بندی */}
       {totalPages > 1 && (
         <div className="mt-8 flex justify-center">
           <Pagination

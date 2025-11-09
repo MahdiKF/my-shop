@@ -2,8 +2,8 @@ import Navbar from "@/components/Header/Navbar";
 import "./globals.css";
 import Layout from "@/components/Layout";
 import { ShoppingCartContextProvider } from "@/context/ShoppingCartContext";
+import { AuthProvider } from "@/context/AuthContext";
 import Banner from "@/components/Header/Banner";
-
 import Footer from "@/components/Footer";
 
 export const metadata = {
@@ -15,14 +15,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        
-        
-        <ShoppingCartContextProvider>
-          <Banner />
-          <Navbar />
-          <Layout>{children}</Layout>
-          <Footer />
-        </ShoppingCartContextProvider>
+        <AuthProvider>
+          <ShoppingCartContextProvider>
+            <Banner />
+            <Navbar />
+            <Layout>{children}</Layout>
+            <Footer />
+          </ShoppingCartContextProvider>
+        </AuthProvider>
       </body>
     </html>
   );

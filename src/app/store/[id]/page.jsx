@@ -1,7 +1,7 @@
 import Container from "@/components/Container";
-import AddToCart from "@/components/AddToCard"; // حواست باشه اسم کامپوننت درست باشه
+import AddToCart from "@/components/AddToCard";
 
-export const dynamic = "force-dynamic"; // برای SSR کامل
+export const dynamic = "force-dynamic";
 
 export default async function Product({ params }) {
   const { id } = params;
@@ -10,7 +10,7 @@ export default async function Product({ params }) {
 
   try {
     const res = await fetch(`https://fakestoreapi.com/products/${id}`, {
-      cache: "no-store", // هر درخواست تازه واکشی شود
+      cache: "no-store",
     });
     product = await res.json();
   } catch (error) {
@@ -28,7 +28,6 @@ export default async function Product({ params }) {
   return (
     <Container>
       <div className="grid grid-cols-1 md:grid-cols-12 gap-10 mt-10 p-6 bg-white shadow-lg rounded-2xl border border-gray-100 transition-all duration-300 hover:shadow-xl">
-        
         <div className="md:col-span-6 flex justify-center items-center">
           <img
             src={product.image}

@@ -50,7 +50,6 @@ export default function Navbar() {
           </Link>
 
           <div className="hidden md:flex items-center space-x-6">
-            {/* لینک All */}
             <Link
               href="/store"
               className={`text-[#111827] font-medium hover:text-[#2563EB] transition-all duration-200 ${

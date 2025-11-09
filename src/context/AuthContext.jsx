@@ -1,29 +1,27 @@
-"use client"; // این خط را اضافه کنید تا کامپوننت به عنوان client-rendered شناخته شود
+"use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-// ایجاد Context برای وضعیت ورود کاربر
 const AuthContext = createContext();
 
-// کامپوننت Provider برای مدیریت وضعیت ورود کاربر
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // وضعیت ورود کاربر
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setUser(JSON.parse(storedUser)); // اطلاعات کاربر را از localStorage می‌خوانیم
+      setUser(JSON.parse(storedUser));
     }
   }, []);
 
   const login = (userData) => {
     setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData)); // ذخیره اطلاعات کاربر در localStorage
+    localStorage.setItem("user", JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("user"); // حذف اطلاعات کاربر از localStorage
+    localStorage.removeItem("user");
   };
 
   return (
@@ -33,7 +31,6 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// هوک برای دسترسی به اطلاعات کاربر و متدهای login و logout
 export const useAuth = () => {
   return useContext(AuthContext);
 };
