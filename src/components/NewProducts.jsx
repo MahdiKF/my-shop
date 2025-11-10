@@ -6,27 +6,27 @@ function NewProducts() {
   const products = [
     {
       id: 1,
-      title: "کفش ورزشی",
+      title: "کوله پشتی",
       image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_t.png",
-      link: "/products/1",
+      link: "/store/1",
     },
     {
       id: 2,
-      title: "کت چرمی",
+      title: "تیشرت",
       image: "https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_t.png",
-      link: "/products/2",
+      link: "/store/2",
     },
     {
       id: 3,
-      title: "ساعت مردانه",
-      image: "https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg",
-      link: "/products/3",
+      title: "ژاکت کتانی",
+      image: "https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_t.png",
+      link: "/store/3",
     },
     {
       id: 4,
-      title: "کیف دستی زنانه",
-      image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_t.png",
-      link: "/products/4",
+      title: "پلیور مردانه",
+      image: "https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_t.png",
+      link: "/store/4",
     },
   ];
 
